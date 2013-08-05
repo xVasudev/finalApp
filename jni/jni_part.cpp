@@ -577,10 +577,10 @@ int getGaussianBlur(Mat img, Mat& retVal, int ksize)
 int stackUp(vector<Mat>& layers, Mat& retVal)
 {
     int i;
-    Mat zerotemp;
-    zerotemp = Mat::zeros(layers[i].size(), CV_8UC3);
-    zerotemp.copyTo(retVal);
-    //retVal = Mat::zeros(layers[i].size(), CV_8UC3);
+    //Mat zerotemp;
+    //zerotemp = Mat::zeros(layers[i].size(), CV_8UC3);
+    //zerotemp.copyTo(retVal);
+    retVal = Mat::zeros(layers[i].size(), CV_8UC3);
     for(i=0; i<layers.size(); i++)
     {
         add(retVal, layers[i], retVal);
