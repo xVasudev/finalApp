@@ -107,6 +107,10 @@ JNIEXPORT jfloatArray JNICALL Java_com_tesseract_studio3d_Animation_MainActivity
     getThreshold(disp, point1, 10, foreground);
     segmentForeground(img1, foreground, background,contours);
 
+    Mat layerAf, layerAb;
+    cvtColor(foreground, layerAf, CV_BGR2GRAY);
+    cvtColor(background, layerAb, CV_BGR2GRAY);
+
     LOGD ("Segmented");
 
     int tLen=0;
@@ -161,6 +165,21 @@ JNIEXPORT jfloatArray JNICALL Java_com_tesseract_studio3d_Animation_MainActivity
 
     LOGD("Reached the end");
     getMaskedImage(img1, foreground);
+    
+    cvtColor(foreground, foreground, CV_BGR2RGBA);
+    cvtColor(background, background, CV_BGR2RGBA);
+    
+    vector<Mat> rgbam;
+    split(foreground, rgbam);
+    rgbam[3] = layerAf;
+    merge(rgbam, foreground);
+    rgbam.clear();
+    
+    split(background, rgbam);
+    rgbam[3] = layerAb;
+    merge(rgbam, background);
+    rgbam.clear();
+    
     imwrite("/mnt/sdcard/Studio3D/Layers/img_fg.png", foreground);
     imwrite("/mnt/sdcard/Studio3D/Layers/img_bg.png", background);
 
