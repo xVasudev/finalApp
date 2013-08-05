@@ -1,13 +1,18 @@
 package com.tesseract.studio3d;
 
-import android.os.Bundle;
-import android.annotation.SuppressLint;
+import java.io.File;
+
 import android.app.Activity;
-import android.graphics.Color;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -20,6 +25,8 @@ public class StartScreen extends Activity {
 	Typeface logofont;
 	String TAG="Studio 3D";
 	private AnimationDrawable tesseractAnim;
+	private ImageView clickButton;
+	CustomFileObserver fileObserver;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -31,10 +38,70 @@ public class StartScreen extends Activity {
 		
 		setContentView(R.layout.activity_start_screen);
 		
+		// Initialize the Studio 3D Directory if it doesnt exist ..
+		
+		File sdCardDirectory = Environment.getExternalStorageDirectory();
+        File mainDir = new File (sdCardDirectory.getAbsolutePath()+"/Studio3D");
+        File layersDir = new File (sdCardDirectory.getAbsolutePath()+"/Studio3D/Layers");
+        
+        Log.d(TAG, "directories created");
+        
+        if(!mainDir.exists())
+        	mainDir.mkdirs();
+		
+        if(!layersDir.exists())
+			layersDir.mkdirs();
+        
+		fileObserver=new CustomFileObserver(getBaseContext());
+		
 		setupLogo();
 		addTesseractLogo();
+		assignOnClickListeners();
+		
+		
 		
 	}
+
+	private void assignOnClickListeners() {
+		// TODO Auto-generated method stub
+		
+		
+		clickButton=(ImageView)findViewById(R.id.cameraView);
+				
+		clickButton.setOnClickListener(new View.OnClickListener() {
+
+	        @Override
+	        public void onClick(View v) {
+	        	String packageName = "com.android.camera"; //Or whatever package should be launched
+
+	        	if(packageName.equals("com.android.camera")){ //Camera
+	        	    try
+	        	    {
+	        	       
+	        	    	Intent intent = getPackageManager().getLaunchIntentForPackage("com.android.camera");
+
+	        	    	intent.putExtra("android.intent.extras.CAMERA_FACING", 2);
+	        	    	intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+	        	        //Log.d("Test","num"+Camera.getNumberOfCameras());
+	        	        startActivity(intent);
+
+	        	    }
+	        	    catch(ActivityNotFoundException e){
+	        	        Intent intent = new Intent();
+	        	        ComponentName comp = new ComponentName("com.android.camera", "com.android.camera.CameraEntry");
+	        	        intent.setComponent(comp);
+	        	        startActivity(intent);
+	        	    }
+	        	}
+	        	else{ //Any other
+	        	    Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+	        	    startActivity(intent);
+	        	}
+	        }
+	    });
+	}
+		
+	
 
 	private void addTesseractLogo() {
 		// TODO Auto-generated method stub
@@ -80,10 +147,11 @@ public class StartScreen extends Activity {
 		logoView2.setTextSize(font_size);
 		logoView2.setText(" 3D");
 		logoView2.setTypeface(logofont2);
-
-		
-		
-		
+	
 	}
+	
+	
+	
+	
 
 }

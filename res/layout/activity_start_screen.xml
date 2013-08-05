@@ -32,19 +32,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/logoAnimation"
-        android:layout_alignTop="@+id/imageView1"
+        android:layout_alignTop="@+id/cameraView"
         android:src="@drawable/browse" />
 
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/imageView1"
+        android:layout_alignLeft="@+id/cameraView"
         android:layout_alignTop="@+id/imageView3"
         android:src="@drawable/placeholder_image" />
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/cameraView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/logo1"
@@ -75,9 +75,9 @@
         android:id="@+id/cameratext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/imageView1"
-        android:layout_alignRight="@+id/imageView1"
-        android:layout_below="@+id/imageView1"
+        android:layout_alignLeft="@+id/cameraView"
+        android:layout_alignRight="@+id/cameraView"
+        android:layout_below="@+id/cameraView"
         android:layout_marginTop="8dp"
         android:text="  Camera"
         android:textColor="#FFFFFF"
