@@ -445,7 +445,7 @@ int doMultiBlur(Mat img, Mat& retVal, Mat disp, Point p1)
     //printf("%d %d\n", range, dispval);
     lval = dispval+1;
     hval = dispval-1;
-    for(i=1; i<5; i++)
+    for(i=1; i<4; i++)
     {
         l1 = lval - range;
         l2 = lval;
@@ -577,7 +577,10 @@ int getGaussianBlur(Mat img, Mat& retVal, int ksize)
 int stackUp(vector<Mat>& layers, Mat& retVal)
 {
     int i;
-    retVal = Mat::zeros(layers[i].size(), CV_8UC3);
+    Mat zerotemp;
+    zerotemp = Mat::zeros(layers[i].size(), CV_8UC3);
+    zerotemp.copyTo(retVal);
+    //retVal = Mat::zeros(layers[i].size(), CV_8UC3);
     for(i=0; i<layers.size(); i++)
     {
         add(retVal, layers[i], retVal);
