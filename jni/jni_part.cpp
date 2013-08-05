@@ -160,8 +160,8 @@ JNIEXPORT jfloatArray JNICALL Java_com_tesseract_studio3d_Animation_MainActivity
 		getMaskedGrayImage(img1, background);
     else if(currentMode==4)
 		getSepia(img1, background);
-
-
+    else if(currentMode == -1)
+        getMaskedImage(img1, background);
 
     LOGD("Reached the end");
     getMaskedImage(img1, foreground);
