@@ -160,8 +160,8 @@ JNIEXPORT jfloatArray JNICALL Java_com_tesseract_studio3d_Animation_MainActivity
 		getMaskedGrayImage(img1, background);
     else if(currentMode==4)
 		getSepia(img1, background);
-
-
+    else if(currentMode == -1)
+        getMaskedImage(img1, background);
 
     LOGD("Reached the end");
     getMaskedImage(img1, foreground);
@@ -577,10 +577,10 @@ int getGaussianBlur(Mat img, Mat& retVal, int ksize)
 int stackUp(vector<Mat>& layers, Mat& retVal)
 {
     int i;
-    Mat zerotemp;
-    zerotemp = Mat::zeros(layers[i].size(), CV_8UC3);
-    zerotemp.copyTo(retVal);
-    //retVal = Mat::zeros(layers[i].size(), CV_8UC3);
+    //Mat zerotemp;
+    //zerotemp = Mat::zeros(layers[i].size(), CV_8UC3);
+    //zerotemp.copyTo(retVal);
+    retVal = Mat::zeros(layers[i].size(), CV_8UC3);
     for(i=0; i<layers.size(); i++)
     {
         add(retVal, layers[i], retVal);
