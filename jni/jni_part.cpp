@@ -445,7 +445,7 @@ int doMultiBlur(Mat img, Mat& retVal, Mat disp, Point p1)
     //printf("%d %d\n", range, dispval);
     lval = dispval+1;
     hval = dispval-1;
-    for(i=1; i<100; i++)
+    for(i=1; i<5; i++)
     {
         l1 = lval - range;
         l2 = lval;
@@ -496,10 +496,11 @@ int doMultiBlur(Mat img, Mat& retVal, Mat disp, Point p1)
         //printf("%d %d %d %d\n", layers[i].cols, layers[i].rows, backLayer.rows, backLayer.cols);
         add(backLayer, layers[i], backLayer);
         //imshow("thresh", layers[i]);
-
+        
         finLayers.push_back(bitwiseImg);
     }
-
+    //imshow("backLayer", backLayer);
+    //waitKey(0);
     Mat blurImage;
     backLayer = Scalar(255, 255, 255) - backLayer;
     GaussianBlur(img, blurImage, Size(19, 19), sigma);
