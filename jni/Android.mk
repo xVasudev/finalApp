@@ -1,8 +1,10 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
-OPENCV_LIB_TYPE:=STATIC
-
+//OPENCV_LIB_TYPE:=STATIC
+//OPENCV_CAMERA_MODULES:=on
+OPENCV_INSTALL_MODULES:=on
+ 
 include /Users/rahulbudhiraja/Work/OpenCV_android/OpenCV-2.4.5-android-sdk/sdk/native/jni/OpenCV.mk
 
 LOCAL_MODULE    := depth_magic
