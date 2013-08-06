@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -35,6 +36,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -76,6 +78,8 @@ public class AnimationActivity extends Activity {
 
 	double scaleValue=0.16;
 	
+	ImageButton next,focus,Replace,reset,full_screen,back;
+	
 
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -87,6 +91,7 @@ public class AnimationActivity extends Activity {
 
 		activityLayout = new RelativeLayout(this);
 		activityLayout.setBackgroundColor(Color.BLACK);
+		activityLayout.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.animationactivity));
 
 		mimageViews = new Vector<ImageView>();
 
@@ -234,14 +239,14 @@ public class AnimationActivity extends Activity {
 
 		layersLayout.setLayoutParams(llayoutParams);
 		layersLayout.setOrientation(LinearLayout.VERTICAL);
-		// layersLayout.setPadding(25,120,0,0);
+	 // layersLayout.setPadding(25,120,0,0);
 
 		layersScroll = new ScrollView(this);
 
 		layersScroll.setLayoutParams(new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
-		layersScroll.setPadding(25, 120, 0, 0);
+		layersScroll.setPadding(12, 130, 0, 0);
 		// layersLayout.setSc
 
 		layersScroll.addView(layersLayout);
@@ -593,7 +598,7 @@ scaleValue, Animation.RELATIVE_TO_SELF, (float) 0.5,
 		activityLayout.addView(newimageView);
 
 		Log.d(TAG, " Width " + newimageView.getWidth());
-
+		System.gc();
 		return newimageView;
 	}
 	
@@ -719,6 +724,11 @@ scaleValue * mimageViews.get(i)
 
 						mimageViews.get(i).setId(1000 + i); // Need to set an
 						// id..1
+						
+						LinearLayout.LayoutParams imgViewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+						imgViewParams.setMargins(0, 50*i, 0, 0);
+
+						mimageViews.get(i).setLayoutParams(imgViewParams);
 
 						layersLayout.addView(mimageViews.get(i));
 						//layersLayout.setVisibility(View.INVISIBLE);
@@ -740,6 +750,9 @@ scaleValue * mimageViews.get(i)
 			layersLayout.setAnimation(animFadeIn);
 			//layersLayout.setVisibility(View.VISIBLE);
 			hs.setVisibility(View.VISIBLE);
+			
+			// Add the buttons ..
+			addButtonstoActivity();
 
 		}
 
@@ -851,5 +864,23 @@ scaleValue * mimageViews.get(i)
 		}
 
 	};
+
+
+	protected void addButtonstoActivity() {
+		// TODO Auto-generated method stub
+		
+		next=new ImageButton(this);
+		next.setImageDrawable(getResources().getDrawable(R.drawable.fullscreen));
+		RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		layoutParams.setMargins(0, 20,20, 0);
+		next.setLayoutParams(layoutParams);
+		activityLayout.addView(next);
+		
+		
+	}
 
 }
