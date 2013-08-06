@@ -1,6 +1,7 @@
 package com.tesseract.studio3d.Animation;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
 
@@ -71,6 +72,10 @@ public class AnimationActivity extends Activity {
 
 	Vector<Vector<ImageView>> filteredViews;
 	boolean isStarted=false;
+	
+
+	double scaleValue=0.16;
+	
 
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -132,7 +137,7 @@ public class AnimationActivity extends Activity {
 
 		// layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, 1);
 		layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 1);
-		layoutParams.setMargins(150, 0, 0, 0);
+		layoutParams.setMargins(185, 0, 0, 0);
 
 		// scroller.setLayoutParams(layoutParams);
 
@@ -171,7 +176,7 @@ public class AnimationActivity extends Activity {
 				temp.setId(2000 + count * imageFilters.length + filternameindex);
 				temp.setOnClickListener(filtersLayerClickListener);
 
-				temp.setImageBitmap(  addBorder(  ((BitmapDrawable)temp.getDrawable()).getBitmap(),3,Color.WHITE));
+				temp.setImageBitmap(  addBorder(  ((BitmapDrawable)temp.getDrawable()).getBitmap(),2,Color.WHITE));
 
 				if(filternameindex!=0)
 					temp.setLayoutParams(imgViewParams);
@@ -198,7 +203,8 @@ public class AnimationActivity extends Activity {
 	}
 
 	private Bitmap addBorder(Bitmap bmp, int borderSize,int borderColor) {
-		Bitmap bmpWithBorder = Bitmap.createBitmap(bmp.getWidth() + borderSize * 2, bmp.getHeight() + borderSize * 2, bmp.getConfig());
+ 		
+		Bitmap bmpWithBorder = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
 		Canvas canvas = new Canvas(bmpWithBorder);
 		Paint bp= new Paint();
@@ -209,10 +215,10 @@ public class AnimationActivity extends Activity {
 
 		canvas.drawBitmap(bmp, 0, 0, new Paint());
 
-		canvas.drawLine(0, 0, w, 0,bp);
-		canvas.drawLine(0, 0, 0, h,bp);
+		canvas.drawLine(0, 0, w,0,bp);
+		canvas.drawLine(0, 0,0, h,bp);
 		canvas.drawLine(w,h,w,0,bp);
-		canvas.drawLine(w, h, 0,h , bp);
+		canvas.drawLine(w, h,0,h, bp);
 
 		//   canvas.drawBitmap(bmp, rect, rect, paint);
 
@@ -280,15 +286,18 @@ public class AnimationActivity extends Activity {
 			 */
 
 			xPos = (-this.getWindowManager().getDefaultDisplay().getWidth() / 2)
-					+ (float) 0.22 * mimageViews.get(i).getWidth() / 2 + 25; // From
+					+ (float) 
+scaleValue * mimageViews.get(i).getWidth() / 2 + 25; // From
 
 			yPos = (-this.getWindowManager().getDefaultDisplay().getHeight() / 2)
-					+ (float) (150 + (0.5 + 2.5 * i)
-							* (0.22 * mimageViews.get(i).getHeight()) / 2);
+					+ (float) (150 + (0.5 + 2.5 )* i
+							* (
+scaleValue * mimageViews.get(i).getHeight()) / 2);
 
 			Log.d(TAG,
 					"position " + 150 + (0.5 + i)
-					* (0.22 * mimageViews.get(i).getHeight()) / 2);
+					* (
+scaleValue * mimageViews.get(i).getHeight()) / 2);
 			// TranslateAnimation anim = new TranslateAnimation( 0,(float)
 			// (mimageViews.get(i).getTop()-25) , 0,
 			// 0+mimageViews.get(i).getLeft()+100*i );
@@ -299,8 +308,10 @@ public class AnimationActivity extends Activity {
 			anim.setFillAfter(true);
 			anim.setFillEnabled(true);
 
-			ScaleAnimation scaleanimation = new ScaleAnimation(1, (float) 0.22,
-					1, (float) 0.22, Animation.RELATIVE_TO_SELF, (float) 0.5,
+			ScaleAnimation scaleanimation = new ScaleAnimation(1, (float) 
+scaleValue,
+					1, (float) 
+scaleValue, Animation.RELATIVE_TO_SELF, (float) 0.5,
 					Animation.RELATIVE_TO_SELF, (float) 0.5);
 			scaleanimation.setDuration(1000);
 			scaleanimation.setFillEnabled(true);
@@ -329,7 +340,7 @@ public class AnimationActivity extends Activity {
 		for (int i = 0; i < CanvasImageViews.size(); i++) {
 			AnimationSet tempAnimation = new AnimationSet(true);
 
-			TranslateAnimation anim = new TranslateAnimation(0, 0, 0, 0);
+			TranslateAnimation anim = new TranslateAnimation(0, 75, 0, 0);
 
 			anim.setFillAfter(true);
 			anim.setFillEnabled(true);
@@ -585,6 +596,48 @@ public class AnimationActivity extends Activity {
 
 		return newimageView;
 	}
+	
+	public void resetBorders()
+	{
+		Iterator<Vector<ImageView>> itr = filteredViews.iterator();
+		
+		Log.d(TAG,"sizes "+filteredViews.size()+"  "+filteredViews.get(1).size());
+	
+		
+		while(itr.hasNext())
+		{
+			
+		
+			   Vector<ImageView> row= (Vector<ImageView>)itr.next();
+		      
+			   for(int i=0;i<row.size();i++)
+			   {
+				   ImageView temp=row.elementAt(i);
+				   temp.setImageBitmap(addBorder(  ((BitmapDrawable)temp.getDrawable()).getBitmap(),2,Color.WHITE));
+					
+			   }
+		    
+			
+		}
+		
+//		
+//		
+//		
+//		
+//		for(int i=0;i<filteredViews.size()-1;i++)
+//			{
+//				for(int j=0;j<filteredViews.get(i).size()-2;j++)
+//				{
+//					ImageView temp;
+//				    temp=(ImageView)findViewById(2000+i*imageFilters.length+j);
+//				    Log.d(TAG,"width "+temp.getWidth()+" height ="+temp.getHeight());
+//					temp.setImageBitmap(addBorder(  ((BitmapDrawable)temp.getDrawable()).getBitmap(),2,Color.WHITE));
+//	
+//				}
+//			
+//	}
+	
+	}
 
 	AnimationListener animFinishListener = new AnimationListener() {
 
@@ -608,14 +661,16 @@ public class AnimationActivity extends Activity {
 
 						mimageViews.get(i).setImageBitmap(
 								Bitmap.createScaledBitmap(layerBitmaps.get(i),
-										(int) Math.round((0.22 * layerBitmaps
+										(int) Math.round((
+scaleValue * layerBitmaps
 												.get(i).getWidth())),
-												(int) Math.round((0.22 * layerBitmaps
+												(int) Math.round((
+scaleValue * layerBitmaps
 														.get(i).getHeight())), true));
 						// layerBitmaps.get(i).createScaledBitmap(src, dstWidth,
 						// dstHeight, filter)
 
-						mimageViews.get(i).setImageBitmap(  addBorder(  ((BitmapDrawable)mimageViews.get(i).getDrawable()).getBitmap(),3,Color.WHITE));
+						mimageViews.get(i).setImageBitmap(  addBorder(  ((BitmapDrawable)mimageViews.get(i).getDrawable()).getBitmap(),2,Color.WHITE));
 
 						Log.d(TAG,
 								"Width small"
@@ -627,7 +682,8 @@ public class AnimationActivity extends Activity {
 
 						Log.d(TAG,
 								"Width small ==  "
-										+ Math.round((0.22 * layerBitmaps
+										+ Math.round((
+scaleValue * layerBitmaps
 												.get(i).getWidth())));
 
 						// mimageViews.get(i).setBackgroundColor(Color.WHITE);
@@ -636,19 +692,22 @@ public class AnimationActivity extends Activity {
 						if (i > 0)
 							mimageViews.get(i).setPadding(
 									0,
-									(int) Math.round(1 * (0.22 * mimageViews
+									(int) Math.round(1 * (
+scaleValue * mimageViews
 											.get(i).getHeight()) / 2) - 30, 0,
 											0);
 
 						Log.d(TAG,
 								"Height"
 										+ (int) Math
-										.round(2.5 * (0.22 * mimageViews
+										.round(2.5 * (
+scaleValue * mimageViews
 												.get(i).getHeight()) / 2));
 
 						Log.d(TAG,
 								"sma height"
-										+ (2.5 * (0.22 * mimageViews.get(i)
+										+ (2.5 * (
+scaleValue * mimageViews.get(i)
 												.getHeight()) / 2));
 
 						activityLayout.removeView(mimageViews.get(i));
@@ -708,9 +767,21 @@ public class AnimationActivity extends Activity {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
 				for (int i = 0; i < mimageViews.size(); i++) {
+					
+					Log.d(TAG,"View id="+i+" size"+mimageViews.size());
+					ImageView temp2 =(ImageView)mimageViews.get(i);
+					temp2.setImageBitmap(addBorder(  ((BitmapDrawable)temp2.getDrawable()).getBitmap(),5,Color.WHITE));
+
 					if (v.getId() == mimageViews.get(i).getId()) {
 						currentSelectedLayer = i;
 
+						// add a red border to show it is selected ..
+						
+						ImageView temp =(ImageView)v;
+						temp.setImageBitmap(addBorder(  ((BitmapDrawable)temp.getDrawable()).getBitmap(),5,Color.RED));
+
+						
+						
 						hs.removeAllViews();
 						filtersLayout.removeAllViews();
 
@@ -722,17 +793,22 @@ public class AnimationActivity extends Activity {
 						for (int j = 0; j < filteredViews.get(i).size(); j++)
 							filtersLayout.addView(filteredViews.get(i).get(j));
 
+						
+						
+						//
 						hs.addView(filtersLayout);
 						hs.invalidate();
 
 						Log.d(TAG, "passing");
 
-						break;
 
 					}
+					
+					
 				}
 
 			}
+			layersScroll.invalidate();
 
 			return false;
 		}
@@ -750,6 +826,7 @@ public class AnimationActivity extends Activity {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
 				int id = v.getId() - 2000;
 				applyFiltertoView(id % imageFilters.length);
+				
 				Log.d(TAG, "ID" + id);
 			}
 			return false;
@@ -762,8 +839,12 @@ public class AnimationActivity extends Activity {
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 
+			resetBorders();
+			
 			int id = v.getId() - 2000;
 			applyFiltertoView(id % imageFilters.length);
+			ImageView temp =(ImageView)v;
+			temp.setImageBitmap(addBorder(  ((BitmapDrawable)temp.getDrawable()).getBitmap(),2,Color.RED));
 
 			Log.d(TAG, "ID" + id);
 

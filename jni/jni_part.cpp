@@ -84,19 +84,19 @@ JNIEXPORT void JNICALL Java_com_tesseract_studio3d_Animation_MainActivity_getDis
 }
 JNIEXPORT jfloatArray JNICALL Java_com_tesseract_studio3d_Animation_MainActivity_getThreshold(JNIEnv* env, jobject, jlong addrBgr, jlong addrDisp, jlong finalImage,jlong addrBackground,jlong addrForeground, jint ji1, jint ji2,jint currentMode)
 {
-	Mat& img = *(Mat*)addrBgr;
-	Mat& disp = *(Mat*)addrDisp;
+  Mat& img = *(Mat*)addrBgr;
+  Mat& disp = *(Mat*)addrDisp;
 
-	Mat& background = *(Mat*)addrBackground;
-	Mat& foreground = *(Mat*)addrForeground;
+  Mat& background = *(Mat*)addrBackground;
+  Mat& foreground = *(Mat*)addrForeground;
 
-	Mat& finImg = *(Mat*)finalImage;
+  Mat& finImg = *(Mat*)finalImage;
 
-	jfloatArray contourPoints;
-	vector<vector<Point> > contours;
+  jfloatArray contourPoints;
+  vector<vector<Point> > contours;
 
-	Mat img1(img, Rect(0, 0, img.cols/2, img.rows));
-	Point point1;
+  Mat img1(img, Rect(0, 0, img.cols/2, img.rows));
+  Point point1;
 
     int x, y;
     x = ji1;
@@ -107,65 +107,84 @@ JNIEXPORT jfloatArray JNICALL Java_com_tesseract_studio3d_Animation_MainActivity
     getThreshold(disp, point1, 10, foreground);
     segmentForeground(img1, foreground, background,contours);
 
+    Mat layerAf, layerAb;
+    cvtColor(foreground, layerAf, CV_BGR2GRAY);
+    cvtColor(background, layerAb, CV_BGR2GRAY);
+
     LOGD ("Segmented");
 
     int tLen=0;
-	for(int i=0; i<contours.size(); i++)
-	{
-		for(int j=0; j<contours[i].size(); j++)
-		{
-			tLen++;
-		}
-	}
+  for(int i=0; i<contours.size(); i++)
+  {
+    for(int j=0; j<contours[i].size(); j++)
+    {
+      tLen++;
+    }
+  }
 
 
-	   LOGD ("Start contour points");
-	contourPoints = env->NewFloatArray(2*tLen);
-	jfloat cPoints[2*tLen];
+     LOGD ("Start contour points");
+  contourPoints = env->NewFloatArray(2*tLen);
+  jfloat cPoints[2*tLen];
 
-	char str[10];
-	char str2[]={"Value"};
-	sprintf(str, "%d", tLen);
-	strcat(str,str2);
+  char str[10];
+  char str2[]={"Value"};
+  sprintf(str, "%d", tLen);
+  strcat(str,str2);
 
-	 LOGD (str);
+   LOGD (str);
 
-	tLen=0;
-	for(int i=0; i<contours.size(); i++)
-	{
-		for(int j=0; j<contours[i].size(); j++)
-		{
-			cPoints[tLen] = contours[i][j].x;
-			tLen++;
-			cPoints[tLen] = contours[i][j].y;
-			tLen++;
-		}
-	}
+  tLen=0;
+  for(int i=0; i<contours.size(); i++)
+  {
+    for(int j=0; j<contours[i].size(); j++)
+    {
+      cPoints[tLen] = contours[i][j].x;
+      tLen++;
+      cPoints[tLen] = contours[i][j].y;
+      tLen++;
+    }
+  }
 
-	   LOGD ("Completed loop");
+     LOGD ("Completed loop");
 
     if(currentMode==1)
     {
-		Mat blurBackground;
+    Mat blurBackground;
         doMultiBlur(img1, blurBackground, disp, point1);
         bitwise_and(background, blurBackground, background);
-	}
+  }
     else if(currentMode==2)
-		doOilPaint(img1, background);
+    doOilPaint(img1, background);
     else if(currentMode==3)
-		getMaskedGrayImage(img1, background);
+    getMaskedGrayImage(img1, background);
     else if(currentMode==4)
-		getSepia(img1, background);
-
-
+    getSepia(img1, background);
+    else if(currentMode == -1)
+        getMaskedImage(img1, background);
 
     LOGD("Reached the end");
     getMaskedImage(img1, foreground);
+
+    cvtColor(foreground, foreground, CV_BGR2RGBA);
+    cvtColor(background, background, CV_BGR2RGBA);
+
+    vector<Mat> rgbam;
+    split(foreground, rgbam);
+    rgbam[3] = layerAf;
+    merge(rgbam, foreground);
+    rgbam.clear();
+
+    split(background, rgbam);
+    rgbam[3] = layerAb;
+    merge(rgbam, background);
+    rgbam.clear();
+
     imwrite("/mnt/sdcard/Studio3D/Layers/img_fg.png", foreground);
     imwrite("/mnt/sdcard/Studio3D/Layers/img_bg.png", background);
 
     addFgBg(foreground, background, finImg);
-    imwrite("/mnt/sdcard/SimpleImageCapture/img_fin.png", finImg);
+    imwrite("/mnt/sdcard/Studio3D/img_fin.png", finImg);
     //resize(finImg, finImg, Size(finImg.cols*2, finImg.rows));
 
 
@@ -426,7 +445,7 @@ int doMultiBlur(Mat img, Mat& retVal, Mat disp, Point p1)
     //printf("%d %d\n", range, dispval);
     lval = dispval+1;
     hval = dispval-1;
-    for(i=1; i<100; i++)
+    for(i=1; i<4; i++)
     {
         l1 = lval - range;
         l2 = lval;
@@ -480,7 +499,8 @@ int doMultiBlur(Mat img, Mat& retVal, Mat disp, Point p1)
 
         finLayers.push_back(bitwiseImg);
     }
-
+    //imshow("backLayer", backLayer);
+    //waitKey(0);
     Mat blurImage;
     backLayer = Scalar(255, 255, 255) - backLayer;
     GaussianBlur(img, blurImage, Size(19, 19), sigma);
@@ -557,6 +577,9 @@ int getGaussianBlur(Mat img, Mat& retVal, int ksize)
 int stackUp(vector<Mat>& layers, Mat& retVal)
 {
     int i;
+    //Mat zerotemp;
+    //zerotemp = Mat::zeros(layers[i].size(), CV_8UC3);
+    //zerotemp.copyTo(retVal);
     retVal = Mat::zeros(layers[i].size(), CV_8UC3);
     for(i=0; i<layers.size(); i++)
     {
@@ -754,7 +777,7 @@ int doGraySingle(Mat img, Mat& retVal, Mat disp, Point p1)
     merge(grayvec, gray);
     bitwise_and(gray, thresh, gray);
     add(gray, retVal, retVal);
-	return 1;
+  return 1;
 }
 
 int getRange(Mat disp, Point p1)

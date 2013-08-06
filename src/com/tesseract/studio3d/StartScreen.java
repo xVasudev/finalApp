@@ -6,8 +6,10 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class StartScreen extends Activity {
@@ -25,6 +28,7 @@ public class StartScreen extends Activity {
 	Typeface logofont;
 	String TAG="Studio 3D";
 	private AnimationDrawable tesseractAnim;
+	private AnimationDrawable splashAnim;
 	private ImageView clickButton;
 	CustomFileObserver fileObserver;
 
@@ -37,6 +41,18 @@ public class StartScreen extends Activity {
 		Log.d(TAG,"window width ="+getWindowManager().getDefaultDisplay().getWidth()+" height ="+getWindowManager().getDefaultDisplay().getHeight());
 		
 		setContentView(R.layout.activity_start_screen);
+		
+		
+		
+		
+//		RelativeLayout rLayout = (RelativeLayout) findViewById (R.id.mainlayout);
+//	    Resources res = getResources(); //resource handle
+//	    Drawable drawable = res.getDrawable(R.drawable.studio3d_logo_00000); //new Image that was added to the res folder
+//
+//	    rLayout.setBackgroundDrawable(drawable);
+//	
+		
+		
 		
 		// Initialize the Studio 3D Directory if it doesnt exist ..
 		
@@ -54,12 +70,28 @@ public class StartScreen extends Activity {
         
 		fileObserver=new CustomFileObserver(getBaseContext());
 		
-		setupLogo();
-		addTesseractLogo();
+		setupSplashAnim();
+		//setupLogo();
+	//	addTesseractLogo();
 		assignOnClickListeners();
 		
 		
 		
+	}
+
+	private void setupSplashAnim() {
+		
+		  Runnable run = new Runnable() {
+		        @Override
+		        public void run() {
+		        	splashAnim.start();
+		        }
+		    };
+
+      ImageView img = (ImageView)findViewById(R.id.splashImg);
+      splashAnim = (AnimationDrawable)img.getDrawable();
+      img.post(run);
+ 
 	}
 
 	private void assignOnClickListeners() {
