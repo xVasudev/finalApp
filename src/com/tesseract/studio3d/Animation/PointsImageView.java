@@ -344,14 +344,14 @@ public class PointsImageView extends ImageView {
 	    
 	    if(isAnimate)
 	    {
-	    	if((System.currentTimeMillis()-lastindex_time)>(animationTime/ContourPoints.length)&&currentindex<ContourPoints.length-2)
-	    		{
-	    			currentindex+=2;
-	    			lastindex_time=System.currentTimeMillis();
-	    		}   
-	    	
-	    	//else if(currentindex==ContourPoints.length-2)
-	    	else if(currentindex==ContourPoints.length-2)
+//	    	if((System.currentTimeMillis()-lastindex_time)>(animationTime/ContourPoints.length)&&currentindex<ContourPoints.length-2)
+//	    		{
+//	    			currentindex+=2;
+//	    			lastindex_time=System.currentTimeMillis();
+//	    		}   
+//	    	
+//	    	//else if(currentindex==ContourPoints.length-2)
+//	    	else if(currentindex>50)
 	    		{
 //	    			MainActivity.strokeFinished();
 	    			isAnimate=!isAnimate;

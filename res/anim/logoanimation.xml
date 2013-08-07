@@ -1,6 +1,6 @@
-<animation-list android:id="@+id/animation" android:oneshot="false" 
+ <animation-list android:id="@+id/animation" android:oneshot="false" 
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/tesslogo_00000" android:duration="25" />
+   <!-- <item android:drawable="@drawable/tesslogo_00000" android:duration="25" />
 <item android:drawable="@drawable/tesslogo_00001" android:duration="25" />
 <item android:drawable="@drawable/tesslogo_00002" android:duration="25" />
 <item android:drawable="@drawable/tesslogo_00003" android:duration="25" />
@@ -95,5 +95,5 @@
 <item android:drawable="@drawable/tesslogo_00092" android:duration="25" />
 <item android:drawable="@drawable/tesslogo_00093" android:duration="25" />
 <item android:drawable="@drawable/tesslogo_00094" android:duration="25" />
-<item android:drawable="@drawable/tesslogo_00095" android:duration="25" />
- </animation-list> 
+<item android:drawable="@drawable/tesslogo_00095" android:duration="25" />-->
+ </animation-list>  

@@ -150,21 +150,51 @@ JNIEXPORT jfloatArray JNICALL Java_com_tesseract_studio3d_Animation_MainActivity
 
     if(currentMode==1)
     {
-		Mat blurBackground;
+        Mat blurBackground;
         doMultiBlur(img1, blurBackground, disp, point1);
         bitwise_and(background, blurBackground, background);
-	}
+        getMaskedImage(img1, foreground);
+    }
     else if(currentMode==2)
-		doOilPaint(img1, background);
+    {
+        doOilPaint(img1, background);
+        getMaskedImage(img1, foreground);
+    }
     else if(currentMode==3)
-		getMaskedGrayImage(img1, background);
+    {
+        getMaskedGrayImage(img1, background);
+        getMaskedImage(img1, foreground);
+    }
     else if(currentMode==4)
-		getSepia(img1, background);
-    else if(currentMode == -1)
+    {
+        getSepia(img1, background);
+        getMaskedImage(img1, foreground);
+    }
+    else if(currentMode == 5)
+    {
+        Mat stickimg;
+        stickimg = imread(argv[3]);
+        resize(stickimg, stickimg, Size(background.cols, background.rows));
+        bitwise_and(background, stickimg, stickimg);
+        stickimg.copyTo(background);
+        getMaskedImage(img1, foreground);
+    }
+    else if (currentMode == 6)
+    {
+        Mat stickimg;
+        stickimg = imread(argv[3]);
+        resize(stickimg, stickimg, Size(foreground.cols, foreground.rows));
+        bitwise_and(foreground, stickimg, stickimg);
+        stickimg.copyTo(foreground);
         getMaskedImage(img1, background);
-
+    }
+    else if(currentMode == -1)
+    {
+        getMaskedImage(img1, background);
+        getMaskedImage(img1, foreground);
+	}
+	
     LOGD("Reached the end");
-    getMaskedImage(img1, foreground);
     
     cvtColor(foreground, foreground, CV_BGR2RGBA);
     cvtColor(background, background, CV_BGR2RGBA);
@@ -184,7 +214,7 @@ JNIEXPORT jfloatArray JNICALL Java_com_tesseract_studio3d_Animation_MainActivity
     imwrite("/mnt/sdcard/Studio3D/Layers/img_bg.png", background);
 
     addFgBg(foreground, background, finImg);
-    imwrite("/mnt/sdcard/SimpleImageCapture/img_fin.png", finImg);
+    imwrite("/mnt/sdcard/Studio3D/img_fin.png", finImg);
     //resize(finImg, finImg, Size(finImg.cols*2, finImg.rows));
 
 
@@ -204,12 +234,12 @@ int getDisp(Mat g1, Mat g2, Mat &disp)
 {
     Mat disp16;
     StereoSGBM sbm;
-    sbm.SADWindowSize = 5; // 5
-    sbm.numberOfDisparities = 192;
-    sbm.preFilterCap = 4;
-    sbm.minDisparity = -32; // -64
+    sbm.SADWindowSize = 7; // 5
+    sbm.numberOfDisparities = 112;
+    sbm.preFilterCap = 20;
+    sbm.minDisparity = -64; // -64
     sbm.uniquenessRatio = 1; // 1
-    sbm.speckleWindowSize = 150; //150
+    sbm.speckleWindowSize = 120; //150
     sbm.speckleRange = 2;
     sbm.disp12MaxDiff = 10; // 10
     sbm.fullDP = false;
@@ -496,11 +526,10 @@ int doMultiBlur(Mat img, Mat& retVal, Mat disp, Point p1)
         //printf("%d %d %d %d\n", layers[i].cols, layers[i].rows, backLayer.rows, backLayer.cols);
         add(backLayer, layers[i], backLayer);
         //imshow("thresh", layers[i]);
-        
+
         finLayers.push_back(bitwiseImg);
     }
-    //imshow("backLayer", backLayer);
-    //waitKey(0);
+
     Mat blurImage;
     backLayer = Scalar(255, 255, 255) - backLayer;
     GaussianBlur(img, blurImage, Size(19, 19), sigma);

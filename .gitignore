@@ -4,6 +4,9 @@
 bin/**
 tmp/**
 tmp/**/*
+obj/**
+libs/*
+libs/armeabi-v7a/*
 *.tmp
 *.bak
 *.swp
