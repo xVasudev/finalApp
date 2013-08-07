@@ -41,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.tesseract.studio3d.R;
 
@@ -52,7 +53,7 @@ public class AnimationActivity extends Activity {
 	Vector<AnimationSet> mAnimations;
 	Vector<Bitmap> layerBitmaps;
 	Vector<int[]> sizes;
-	RelativeLayout activityLayout;
+	RelativeLayout activityLayout,fullScreenLayout;
 	File seperatedLayersFolder;
 	String TAG = "AnimationActivity";
 
@@ -74,12 +75,12 @@ public class AnimationActivity extends Activity {
 
 	Vector<Vector<ImageView>> filteredViews;
 	boolean isStarted=false;
-	
+
 
 	double scaleValue=0.16;
-	
+
 	ImageButton next,focus,Replace,reset,full_screen,back;
-	
+
 
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -93,6 +94,9 @@ public class AnimationActivity extends Activity {
 		activityLayout.setBackgroundColor(Color.BLACK);
 		activityLayout.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.animationactivity));
 
+		
+		fullScreenLayout = new RelativeLayout(this);
+		
 		mimageViews = new Vector<ImageView>();
 
 		CanvasImageViews = new Vector<ImageView>();
@@ -109,6 +113,7 @@ public class AnimationActivity extends Activity {
 				Environment.getExternalStorageDirectory()
 				+ "/Studio3D/Layers/");
 
+		System.gc();
 		LoadFiles(seperatedLayersFolder);
 
 		hs = new HorizontalScrollView(this);
@@ -122,6 +127,15 @@ public class AnimationActivity extends Activity {
 		// setContentView(R.layout.timepasslayout);
 		setContentView(activityLayout);
 
+	}
+	protected void onRestart() {
+	    super.onRestart();  // Always call the superclass method first
+	    
+	    // Activity being restarted from stopped state    
+	}
+	
+	protected void onStart() {
+	    super.onStart();  // Always call the superclass method first
 	}
 
 	private void initializenewHorizontallScrollView() {
@@ -208,7 +222,7 @@ public class AnimationActivity extends Activity {
 	}
 
 	private Bitmap addBorder(Bitmap bmp, int borderSize,int borderColor) {
- 		
+
 		Bitmap bmpWithBorder = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
 		Canvas canvas = new Canvas(bmpWithBorder);
@@ -239,7 +253,7 @@ public class AnimationActivity extends Activity {
 
 		layersLayout.setLayoutParams(llayoutParams);
 		layersLayout.setOrientation(LinearLayout.VERTICAL);
-	 // layersLayout.setPadding(25,120,0,0);
+		// layersLayout.setPadding(25,120,0,0);
 
 		layersScroll = new ScrollView(this);
 
@@ -292,17 +306,17 @@ public class AnimationActivity extends Activity {
 
 			xPos = (-this.getWindowManager().getDefaultDisplay().getWidth() / 2)
 					+ (float) 
-scaleValue * mimageViews.get(i).getWidth() / 2 + 25; // From
+					scaleValue * mimageViews.get(i).getWidth() / 2 + 25; // From
 
 			yPos = (-this.getWindowManager().getDefaultDisplay().getHeight() / 2)
 					+ (float) (150 + (0.5 + 2.5 )* i
 							* (
-scaleValue * mimageViews.get(i).getHeight()) / 2);
+									scaleValue * mimageViews.get(i).getHeight()) / 2);
 
 			Log.d(TAG,
 					"position " + 150 + (0.5 + i)
 					* (
-scaleValue * mimageViews.get(i).getHeight()) / 2);
+							scaleValue * mimageViews.get(i).getHeight()) / 2);
 			// TranslateAnimation anim = new TranslateAnimation( 0,(float)
 			// (mimageViews.get(i).getTop()-25) , 0,
 			// 0+mimageViews.get(i).getLeft()+100*i );
@@ -314,9 +328,9 @@ scaleValue * mimageViews.get(i).getHeight()) / 2);
 			anim.setFillEnabled(true);
 
 			ScaleAnimation scaleanimation = new ScaleAnimation(1, (float) 
-scaleValue,
+					scaleValue,
 					1, (float) 
-scaleValue, Animation.RELATIVE_TO_SELF, (float) 0.5,
+					scaleValue, Animation.RELATIVE_TO_SELF, (float) 0.5,
 					Animation.RELATIVE_TO_SELF, (float) 0.5);
 			scaleanimation.setDuration(1000);
 			scaleanimation.setFillEnabled(true);
@@ -601,47 +615,47 @@ scaleValue, Animation.RELATIVE_TO_SELF, (float) 0.5,
 		System.gc();
 		return newimageView;
 	}
-	
+
 	public void resetBorders()
 	{
 		Iterator<Vector<ImageView>> itr = filteredViews.iterator();
-		
+
 		Log.d(TAG,"sizes "+filteredViews.size()+"  "+filteredViews.get(1).size());
-	
-		
+
+
 		while(itr.hasNext())
 		{
-			
-		
-			   Vector<ImageView> row= (Vector<ImageView>)itr.next();
-		      
-			   for(int i=0;i<row.size();i++)
-			   {
-				   ImageView temp=row.elementAt(i);
-				   temp.setImageBitmap(addBorder(  ((BitmapDrawable)temp.getDrawable()).getBitmap(),2,Color.WHITE));
-					
-			   }
-		    
-			
+
+
+			Vector<ImageView> row= (Vector<ImageView>)itr.next();
+
+			for(int i=0;i<row.size();i++)
+			{
+				ImageView temp=row.elementAt(i);
+				temp.setImageBitmap(addBorder(  ((BitmapDrawable)temp.getDrawable()).getBitmap(),2,Color.WHITE));
+
+			}
+
+
 		}
-		
-//		
-//		
-//		
-//		
-//		for(int i=0;i<filteredViews.size()-1;i++)
-//			{
-//				for(int j=0;j<filteredViews.get(i).size()-2;j++)
-//				{
-//					ImageView temp;
-//				    temp=(ImageView)findViewById(2000+i*imageFilters.length+j);
-//				    Log.d(TAG,"width "+temp.getWidth()+" height ="+temp.getHeight());
-//					temp.setImageBitmap(addBorder(  ((BitmapDrawable)temp.getDrawable()).getBitmap(),2,Color.WHITE));
-//	
-//				}
-//			
-//	}
-	
+
+		//		
+		//		
+		//		
+		//		
+		//		for(int i=0;i<filteredViews.size()-1;i++)
+		//			{
+		//				for(int j=0;j<filteredViews.get(i).size()-2;j++)
+		//				{
+		//					ImageView temp;
+		//				    temp=(ImageView)findViewById(2000+i*imageFilters.length+j);
+		//				    Log.d(TAG,"width "+temp.getWidth()+" height ="+temp.getHeight());
+		//					temp.setImageBitmap(addBorder(  ((BitmapDrawable)temp.getDrawable()).getBitmap(),2,Color.WHITE));
+		//	
+		//				}
+		//			
+		//	}
+
 	}
 
 	AnimationListener animFinishListener = new AnimationListener() {
@@ -667,15 +681,16 @@ scaleValue, Animation.RELATIVE_TO_SELF, (float) 0.5,
 						mimageViews.get(i).setImageBitmap(
 								Bitmap.createScaledBitmap(layerBitmaps.get(i),
 										(int) Math.round((
-scaleValue * layerBitmaps
+												scaleValue * layerBitmaps
 												.get(i).getWidth())),
 												(int) Math.round((
-scaleValue * layerBitmaps
+														scaleValue * layerBitmaps
 														.get(i).getHeight())), true));
 						// layerBitmaps.get(i).createScaledBitmap(src, dstWidth,
 						// dstHeight, filter)
-
-						mimageViews.get(i).setImageBitmap(  addBorder(  ((BitmapDrawable)mimageViews.get(i).getDrawable()).getBitmap(),2,Color.WHITE));
+						if(i==0)
+							mimageViews.get(i).setImageBitmap(  addBorder(  ((BitmapDrawable)mimageViews.get(i).getDrawable()).getBitmap(),2,Color.RED));
+						else mimageViews.get(i).setImageBitmap(  addBorder(  ((BitmapDrawable)mimageViews.get(i).getDrawable()).getBitmap(),2,Color.WHITE));
 
 						Log.d(TAG,
 								"Width small"
@@ -688,7 +703,7 @@ scaleValue * layerBitmaps
 						Log.d(TAG,
 								"Width small ==  "
 										+ Math.round((
-scaleValue * layerBitmaps
+												scaleValue * layerBitmaps
 												.get(i).getWidth())));
 
 						// mimageViews.get(i).setBackgroundColor(Color.WHITE);
@@ -698,7 +713,7 @@ scaleValue * layerBitmaps
 							mimageViews.get(i).setPadding(
 									0,
 									(int) Math.round(1 * (
-scaleValue * mimageViews
+											scaleValue * mimageViews
 											.get(i).getHeight()) / 2) - 30, 0,
 											0);
 
@@ -706,13 +721,13 @@ scaleValue * mimageViews
 								"Height"
 										+ (int) Math
 										.round(2.5 * (
-scaleValue * mimageViews
+												scaleValue * mimageViews
 												.get(i).getHeight()) / 2));
 
 						Log.d(TAG,
 								"sma height"
 										+ (2.5 * (
-scaleValue * mimageViews.get(i)
+												scaleValue * mimageViews.get(i)
 												.getHeight()) / 2));
 
 						activityLayout.removeView(mimageViews.get(i));
@@ -724,7 +739,7 @@ scaleValue * mimageViews.get(i)
 
 						mimageViews.get(i).setId(1000 + i); // Need to set an
 						// id..1
-						
+
 						LinearLayout.LayoutParams imgViewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 						imgViewParams.setMargins(0, 50*i, 0, 0);
 
@@ -750,7 +765,7 @@ scaleValue * mimageViews.get(i)
 			layersLayout.setAnimation(animFadeIn);
 			//layersLayout.setVisibility(View.VISIBLE);
 			hs.setVisibility(View.VISIBLE);
-			
+
 			// Add the buttons ..
 			addButtonstoActivity();
 
@@ -780,7 +795,7 @@ scaleValue * mimageViews.get(i)
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
 				for (int i = 0; i < mimageViews.size(); i++) {
-					
+
 					Log.d(TAG,"View id="+i+" size"+mimageViews.size());
 					ImageView temp2 =(ImageView)mimageViews.get(i);
 					temp2.setImageBitmap(addBorder(  ((BitmapDrawable)temp2.getDrawable()).getBitmap(),5,Color.WHITE));
@@ -789,12 +804,10 @@ scaleValue * mimageViews.get(i)
 						currentSelectedLayer = i;
 
 						// add a red border to show it is selected ..
-						
+
 						ImageView temp =(ImageView)v;
 						temp.setImageBitmap(addBorder(  ((BitmapDrawable)temp.getDrawable()).getBitmap(),5,Color.RED));
 
-						
-						
 						hs.removeAllViews();
 						filtersLayout.removeAllViews();
 
@@ -806,18 +819,13 @@ scaleValue * mimageViews.get(i)
 						for (int j = 0; j < filteredViews.get(i).size(); j++)
 							filtersLayout.addView(filteredViews.get(i).get(j));
 
-						
-						
 						//
 						hs.addView(filtersLayout);
 						hs.invalidate();
 
 						Log.d(TAG, "passing");
-
-
 					}
-					
-					
+
 				}
 
 			}
@@ -839,7 +847,7 @@ scaleValue * mimageViews.get(i)
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
 				int id = v.getId() - 2000;
 				applyFiltertoView(id % imageFilters.length);
-				
+
 				Log.d(TAG, "ID" + id);
 			}
 			return false;
@@ -853,7 +861,7 @@ scaleValue * mimageViews.get(i)
 			// TODO Auto-generated method stub
 
 			resetBorders();
-			
+
 			int id = v.getId() - 2000;
 			applyFiltertoView(id % imageFilters.length);
 			ImageView temp =(ImageView)v;
@@ -868,19 +876,162 @@ scaleValue * mimageViews.get(i)
 
 	protected void addButtonstoActivity() {
 		// TODO Auto-generated method stub
-		
-		next=new ImageButton(this);
-		next.setImageDrawable(getResources().getDrawable(R.drawable.fullscreen));
+
+		full_screen=new ImageButton(this);
+		full_screen.setImageDrawable(getResources().getDrawable(R.drawable.fullscreen));
+		full_screen.setBackgroundColor(Color.TRANSPARENT);
 		RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.WRAP_CONTENT,
 				RelativeLayout.LayoutParams.WRAP_CONTENT);
 		layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-		layoutParams.setMargins(0, 20,20, 0);
-		next.setLayoutParams(layoutParams);
-		activityLayout.addView(next);
+
+		layoutParams.setMargins(0, 120,20, 0);
+		full_screen.setLayoutParams(layoutParams);
+		full_screen.setId(54345);
+		activityLayout.addView(full_screen);
+		full_screen.setOnClickListener(buttonClickListener);
+
+		layoutParams=new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+
+		TextView valueTV = new TextView(this);
+		valueTV.setText("h");
+		valueTV.setId(54321);
+		valueTV.setLayoutParams(layoutParams);
+		valueTV.setVisibility(View.INVISIBLE);
+		activityLayout.addView(valueTV);
+
+		Replace=new ImageButton(this);
+		Replace.setImageDrawable(getResources().getDrawable(R.drawable.replace));
+		Replace.setBackgroundColor(Color.TRANSPARENT);
+		layoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		layoutParams.addRule(RelativeLayout.LEFT_OF, 54321);
+
+		//layoutParams.setMargins(0, 0,40, 0);
+
+		Replace.setLayoutParams(layoutParams);
+		activityLayout.addView(Replace);
+
+		layoutParams=new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		layoutParams.addRule(RelativeLayout.RIGHT_OF, 54321);
+
+		layoutParams.setMargins(175, 0,0, 0);
+
+		focus=new ImageButton(this);
+		focus.setImageDrawable(getResources().getDrawable(R.drawable.bluricon));
+		focus.setLayoutParams(layoutParams);
+		focus.setBackgroundColor(Color.TRANSPARENT);
+		activityLayout.addView(focus);
+
+
+
+		layoutParams=new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+		layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		//layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+
+		layoutParams.addRule(RelativeLayout.BELOW, 54345);
+
+		layoutParams.setMargins(0, 90,20, 0);
+
+		reset=new ImageButton(this);
+
+		reset.setId(9876);
+		reset.setOnClickListener(buttonClickListener);
+		reset.setImageDrawable(getResources().getDrawable(R.drawable.reset));
+		reset.setLayoutParams(layoutParams);
+		reset.setBackgroundColor(Color.TRANSPARENT);
+		activityLayout.addView(reset);
+
+		layoutParams=new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
 		
+		layoutParams.setMargins(30, 0,0,0);
+	
+		back=new ImageButton(this);
 		
+		back.setOnClickListener(buttonClickListener);
+		back.setImageDrawable(getResources().getDrawable(R.drawable.back));
+		back.setLayoutParams(layoutParams);
+		back.setBackgroundColor(Color.TRANSPARENT);
+		
+		activityLayout.addView(back);
+
+
 	}
 
+	public OnClickListener buttonClickListener = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+       
+			if(v.getId()==54345)
+			{
+				Vector<ImageView> fullImgViews=new Vector<ImageView>();
+				RelativeLayout.LayoutParams imgViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				fullScreenLayout.removeAllViews();
+				setContentView(fullScreenLayout);
+				
+				for(int i=0;i<CanvasImageViews.size();i++)
+					{   
+					    ImageView temp=new ImageView(getBaseContext());
+					    temp.setImageDrawable(CanvasImageViews.get(i).getDrawable());
+					    temp.setLayoutParams(imgViewParams);
+					    fullImgViews.add(temp);
+						fullScreenLayout.addView(temp);
+					}
+				
+				imgViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				
+				ImageButton backButton;
+				backButton=new ImageButton(getBaseContext());
+				
+				backButton.setBackgroundColor(Color.TRANSPARENT);
+				backButton.setImageDrawable(getResources().getDrawable(R.drawable.normalscreen));
+				
+//				imgViewParams.setMargins(0, 0, 0, 0);
+				imgViewParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+				backButton.setLayoutParams(imgViewParams);
+				fullScreenLayout.addView(backButton);
+				
+				backButton.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						setContentView(activityLayout); 
+					}
+				});
+				//backButton.set
+			}
+			
+			if(v.getId()==9876)
+			{
+				
+			for(int i=0;i<CanvasImageViews.size();i++)
+			{
+			
+				CanvasImageViews.get(i).setImageBitmap(layerBitmaps.get(i));
+				
+			}
+			resetBorders();
+
+		}
+		}
+	};
 }
