@@ -77,7 +77,7 @@ public class CustomFileObserver
 							option.inScaled = true;
 
 							Bitmap fullsize_bitmap=BitmapFactory.decodeFile(jpgfilename,option);
-
+							Log.d("studio3d","width="+fullsize_bitmap.getWidth()+" Height= "+fullsize_bitmap.getHeight());
 							Bitmap left_img=Bitmap.createBitmap(fullsize_bitmap, 0,0,fullsize_bitmap.getWidth()/2,fullsize_bitmap.getHeight());
 
 							Bitmap right_img=Bitmap.createBitmap(fullsize_bitmap,fullsize_bitmap.getWidth()/2,0,fullsize_bitmap.getWidth()/2,fullsize_bitmap.getHeight());
